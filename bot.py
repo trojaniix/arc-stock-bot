@@ -173,31 +173,68 @@ async def check(interaction: discord.Interaction, item: str):
         f"📦 المتوفر من {item}: {stock[item]}"
     )
 
+class StockSelect(discord.ui.Select):
+    def __init__(self):
+
+        options = []
+
+        for item, amount in stock.items():
+            options.append(
+                discord.SelectOption(
+                    label=item.upper(),
+                    description=f"الكمية: {amount}"
+                )
+            )
+
+        super().__init__(
+            placeholder="اختر السلاح",
+            min_values=1,
+            max_values=1,
+            options=options
+        )
+
+    async def callback(self, interaction: discord.Interaction):
+
+        item = self.values[0].lower()
+
+        embed = discord.Embed(
+            title=f"🔫 {item.upper()}",
+            description=f"📦 الكمية: {stock[item]}",
+            color=0x00ff00
+        )
+
+        await interaction.response.send_message(
+            embed=embed,
+            ephemeral=True
+        )
+
+
+class StockView(discord.ui.View):
+    def __init__(self):
+        super().__init__()
+        self.add_item(StockSelect())
+
 # 📋 عرض جميع المخزون
 @bot.tree.command(
     name="stockall",
-    description="عرض جميع المخزون"
+    description="عرض جميع المخزون",
+    guild=discord.Object(id=1490072114089164920)
 )
 async def stockall(interaction: discord.Interaction):
 
-    await interaction.response.defer()
-
     if not stock:
-        await interaction.followup.send("📦 المخزون فارغ")
+        await interaction.response.send_message("📦 المخزون فارغ")
         return
 
     embed = discord.Embed(
         title="📋 جميع المخزون",
+        description="اختر السلاح لمعرفة الكمية",
         color=0x00ff00
     )
 
-    message = ""
-
-    for item, amount in stock.items():
-        message += f"🔫 **{item.upper()}** — `{amount}`\n"
-
-    embed.description = message
-
-    await interaction.followup.send(embed=embed)
+    await interaction.response.send_message(
+        embed=embed,
+        view=StockView()
+    )
 
 bot.run(TOKEN)
