@@ -12,19 +12,22 @@ intents.message_content = True
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 
+GUILD_ID = 1490072114089164920
+guild = discord.Object(id=GUILD_ID)
+
 FILE_NAME = "stock.json"
 
 # تحميل المخزون
 def load_stock():
     if os.path.exists(FILE_NAME):
-        with open(FILE_NAME, "r") as f:
+        with open(FILE_NAME, "r", encoding="utf-8") as f:
             return json.load(f)
     return {}
 
 # حفظ المخزون
 def save_stock(data):
-    with open(FILE_NAME, "w") as f:
-        json.dump(data, f)
+    with open(FILE_NAME, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
 
 stock = load_stock()
 
@@ -32,8 +35,10 @@ stock = load_stock()
 @bot.event
 async def on_ready():
 
-    guild = discord.Object(id=1490072114089164920)
+    # حذف الأوامر القديمة
+    bot.tree.clear_commands(guild=guild)
 
+    # مزامنة الأوامر الجديدة
     await bot.tree.sync(guild=guild)
 
     print(f"Logged in as {bot.user}")
@@ -43,7 +48,7 @@ async def on_ready():
 @bot.tree.command(
     name="add",
     description="إضافة سلاح للمخزون",
-    guild=discord.Object(id=1490072114089164920)
+    guild=guild
 )
 @app_commands.describe(
     item="اسم السلاح",
@@ -68,7 +73,7 @@ async def add(interaction: discord.Interaction, item: str, amount: int):
 @bot.tree.command(
     name="neg",
     description="خصم كمية من المخزون",
-    guild=discord.Object(id=1490072114089164920)
+    guild=guild
 )
 @app_commands.describe(
     item="اسم السلاح",
@@ -98,7 +103,7 @@ async def neg(interaction: discord.Interaction, item: str, amount: int):
 @bot.tree.command(
     name="sell",
     description="بيع سلاح مع تسجيل العملية",
-    guild=discord.Object(id=1490072114089164920)
+    guild=guild
 )
 @app_commands.describe(
     item="اسم السلاح",
@@ -157,7 +162,7 @@ async def sell(
 @bot.tree.command(
     name="check",
     description="فحص كمية سلاح",
-    guild=discord.Object(id=1490072114089164920)
+    guild=guild
 )
 @app_commands.describe(
     item="اسم السلاح"
@@ -178,7 +183,7 @@ async def check(interaction: discord.Interaction, item: str):
 @bot.tree.command(
     name="stockall",
     description="عرض جميع المخزون",
-    guild=discord.Object(id=1490072114089164920)
+    guild=guild
 )
 async def stockall(interaction: discord.Interaction):
 
