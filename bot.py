@@ -179,12 +179,16 @@ class StockSelect(discord.ui.Select):
         options = []
 
         for item, amount in stock.items():
+
             options.append(
                 discord.SelectOption(
                     label=item.upper(),
                     description=f"الكمية: {amount}"
                 )
             )
+
+        # Discord يسمح فقط بـ 25 خيار
+        options = options[:25]
 
         super().__init__(
             placeholder="اختر السلاح",
@@ -195,11 +199,11 @@ class StockSelect(discord.ui.Select):
 
     async def callback(self, interaction: discord.Interaction):
 
-        item = self.values[0].lower()
+        selected_item = self.values[0].lower()
 
         embed = discord.Embed(
-            title=f"🔫 {item.upper()}",
-            description=f"📦 الكمية: {stock[item]}",
+            title=f"🔫 {selected_item.upper()}",
+            description=f"📦 الكمية: {stock[selected_item]}",
             color=0x00ff00
         )
 
@@ -211,7 +215,8 @@ class StockSelect(discord.ui.Select):
 
 class StockView(discord.ui.View):
     def __init__(self):
-        super().__init__()
+        super().__init__(timeout=None)
+
         self.add_item(StockSelect())
 
 # 📋 عرض جميع المخزون
