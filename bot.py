@@ -173,47 +173,7 @@ async def check(interaction: discord.Interaction, item: str):
         f"📦 المتوفر من {item}: {stock[item]}"
     )
 
-class StockSelect(discord.ui.Select):
-    def __init__(self):
 
-        options = []
-
-        for item, amount in stock.items():
-
-            options.append(
-                discord.SelectOption(
-                    label=item.upper(),
-                    description=f"الكمية: {amount}"
-                )
-            )
-
-        # Discord يسمح فقط بـ 25 خيار
-        options = options[:25]
-
-        super().__init__(
-            placeholder="اختر السلاح",
-            min_values=1,
-            max_values=1,
-            options=options
-        )
-
-    async def callback(self, interaction: discord.Interaction):
-
-        selected_item = self.values[0].lower()
-
-        embed = discord.Embed(
-            title=f"🔫 {selected_item.upper()}",
-            description=f"📦 الكمية: {stock[selected_item]}",
-            color=0x00ff00
-        )
-
-        await interaction.response.send_message(
-            embed=embed,
-            ephemeral=True
-        )
-
-
-class StockView(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None)
 
@@ -233,13 +193,16 @@ async def stockall(interaction: discord.Interaction):
 
     embed = discord.Embed(
         title="📋 جميع المخزون",
-        description="اختر السلاح لمعرفة الكمية",
         color=0x00ff00
     )
 
-    await interaction.response.send_message(
-        embed=embed,
-        view=StockView()
-    )
+    message = ""
+
+    for item, amount in stock.items():
+        message += f"🔫 **{item.upper()}** — `{amount}`\n"
+
+    embed.description = message
+
+    await interaction.response.send_message(embed=embed)
 
 bot.run(TOKEN)
