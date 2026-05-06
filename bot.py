@@ -37,8 +37,6 @@ async def on_ready():
 
     guild = discord.Object(id=1490072114089164920)
 
-    bot.tree.clear_commands(guild=guild)
-
     await bot.tree.sync(guild=guild)
 
     print(f"Logged in as {bot.user}")
