@@ -97,7 +97,8 @@ async def neg(interaction: discord.Interaction, item: str, amount: int):
 # 💰 بيع مع سجل
 @bot.tree.command(
     name="sell",
-    description="بيع سلاح مع تسجيل العملية"
+    description="بيع سلاح مع تسجيل العملية",
+    guild=discord.Object(id=1490072114089164920)
 )
 @app_commands.describe(
     item="اسم السلاح",
@@ -172,12 +173,6 @@ async def check(interaction: discord.Interaction, item: str):
     await interaction.response.send_message(
         f"📦 المتوفر من {item}: {stock[item]}"
     )
-
-
-    def __init__(self):
-        super().__init__(timeout=None)
-
-        self.add_item(StockSelect())
 
 # 📋 عرض جميع المخزون
 @bot.tree.command(
