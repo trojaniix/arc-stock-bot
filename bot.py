@@ -33,12 +33,15 @@ stock = load_stock()
 
 # تشغيل البوت
 @bot.event
+a@bot.event
 async def on_ready():
 
-    # حذف الأوامر القديمة
+    guild = discord.Object(id=1490072114089164920)
+
+    # حذف أوامر السلاش القديمة
     bot.tree.clear_commands(guild=guild)
 
-    # مزامنة الأوامر الجديدة
+    # إعادة مزامنة الأوامر
     await bot.tree.sync(guild=guild)
 
     print(f"Logged in as {bot.user}")
