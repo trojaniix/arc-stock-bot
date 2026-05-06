@@ -97,24 +97,30 @@ async def neg(interaction: discord.Interaction, item: str, amount: int):
 # 💰 بيع مع سجل
 @bot.tree.command(
     name="sell",
-    description="بيع سلاح مع تسجيل العملية",
-    guild=discord.Object(id=1490072114089164920)
+    description="بيع سلاح مع تسجيل العملية"
 )
 @app_commands.describe(
     item="اسم السلاح",
     amount="الكمية",
     customer="اسم الزبون"
 )
-async def sell(interaction: discord.Interaction, item: str, amount: int, customer: str):
+async def sell(
+    interaction: discord.Interaction,
+    item: str,
+    amount: int,
+    customer: str
+):
+
+    await interaction.response.defer()
 
     item = item.lower()
 
     if item not in stock:
-        await interaction.response.send_message("❌ السلاح غير موجود")
+        await interaction.followup.send("❌ السلاح غير موجود")
         return
 
     if stock[item] < amount:
-        await interaction.response.send_message("❌ الكمية غير كافية")
+        await interaction.followup.send("❌ الكمية غير كافية")
         return
 
     stock[item] -= amount
@@ -137,7 +143,7 @@ async def sell(interaction: discord.Interaction, item: str, amount: int, custome
     with open("sales_log.txt", "a", encoding="utf-8") as log_file:
         log_file.write(log_message + "\n")
 
-    await interaction.response.send_message(
+    await interaction.followup.send(
         f"""✅ تمت عملية البيع
 
 👤 الزبون: {customer}
