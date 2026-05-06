@@ -170,13 +170,14 @@ async def check(interaction: discord.Interaction, item: str):
 # 📋 عرض جميع المخزون
 @bot.tree.command(
     name="stockall",
-    description="عرض جميع المخزون",
-    guild=discord.Object(id=1490072114089164920)
+    description="عرض جميع المخزون"
 )
 async def stockall(interaction: discord.Interaction):
 
+    await interaction.response.defer()
+
     if not stock:
-        await interaction.response.send_message("📦 المخزون فارغ")
+        await interaction.followup.send("📦 المخزون فارغ")
         return
 
     embed = discord.Embed(
@@ -191,6 +192,6 @@ async def stockall(interaction: discord.Interaction):
 
     embed.description = message
 
-    await interaction.response.send_message(embed=embed)
+    await interaction.followup.send(embed=embed)
 
 bot.run(TOKEN)
